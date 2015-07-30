@@ -1,0 +1,7 @@
+language: go
+install:
+  - go get -t ./...
+  - go get github.com/mattn/goveralls
+script:
+  - make
+  - goveralls -coverprofile=cover.out -service=travis-ci || true
