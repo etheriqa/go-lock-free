@@ -1,4 +1,6 @@
-PACKAGES = github.com/etheriqa/go-lock-free/queue
+PACKAGES = \
+	github.com/etheriqa/go-lock-free/queue \
+	github.com/etheriqa/go-lock-free/stack \
 
 .PHONY: all test bench
 
