@@ -1,6 +1,7 @@
 package stack
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -53,6 +54,35 @@ func TestStack(t *testing.T) {
 			assert.False(ok)
 		}
 	}
+}
+
+func BenchmarkNaiveStack(b *testing.B) {
+	type node struct {
+		value interface{}
+		next  *node
+	}
+	top := (*node)(nil)
+	mtx := sync.Mutex{}
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			func() {
+				mtx.Lock()
+				defer mtx.Unlock()
+
+				top = &node{
+					next: top,
+				}
+			}()
+
+			func() {
+				mtx.Lock()
+				defer mtx.Unlock()
+
+				top = top.next
+			}()
+		}
+	})
 }
 
 func BenchmarkLockFreeStack(b *testing.B) {
