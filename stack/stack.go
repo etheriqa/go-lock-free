@@ -1,6 +1,7 @@
 package stack
 
 import (
+	"math/rand"
 	"sync/atomic"
 	"unsafe"
 )
@@ -59,6 +60,9 @@ func (s *Stack) Push(v interface{}) {
 		if s.tryPushTop(v) {
 			return
 		}
+		if s.tryPushExchanger(v) {
+			return
+		}
 	}
 }
 
@@ -70,6 +74,9 @@ func (s *Stack) Pop() (v interface{}, ok bool) {
 			} else {
 				return top.value, true
 			}
+		}
+		if v, ok := s.tryPopExchanger(); ok {
+			return v, true
 		}
 	}
 }
@@ -94,9 +101,8 @@ func (s *Stack) tryPopTop() (*node, bool) {
 }
 
 func (s *Stack) tryPushExchanger(v interface{}) bool {
-	// TODO choose an index atrandom
 	// TODO time out
-	slotptr := &s.exchangers[0]
+	slotptr := &s.exchangers[rand.Intn(nExchangers)]
 	for i := 0; i < 100; i++ {
 		oldSlot := atomic.LoadPointer(slotptr)
 		switch (*exchanger)(oldSlot).state {
@@ -140,9 +146,8 @@ func (s *Stack) tryPushExchanger(v interface{}) bool {
 }
 
 func (s *Stack) tryPopExchanger() (interface{}, bool) {
-	// TODO choose an index atrandom
 	// TODO time out
-	slotptr := &s.exchangers[0]
+	slotptr := &s.exchangers[rand.Intn(nExchangers)]
 	for i := 0; i < 100; i++ {
 		oldSlot := atomic.LoadPointer(slotptr)
 		switch (*exchanger)(oldSlot).state {
@@ -168,8 +173,6 @@ func (s *Stack) tryPopExchanger() (interface{}, bool) {
 			}
 			return nil, false
 		case statePushing:
-			return nil, false
-		case statePoping:
 			newSlot := unsafe.Pointer(&exchanger{
 				state: stateExchanging,
 			})
@@ -177,6 +180,8 @@ func (s *Stack) tryPopExchanger() (interface{}, bool) {
 				break
 			}
 			return (*exchanger)(oldSlot).value, true
+		case statePoping:
+			return nil, false
 		case stateExchanging:
 			return nil, false
 		}
