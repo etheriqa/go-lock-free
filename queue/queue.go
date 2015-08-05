@@ -30,7 +30,7 @@ func NewQueue() *Queue {
 	}
 }
 
-func (q *Queue) enqueue(v interface{}) {
+func (q *Queue) Enqueue(v interface{}) {
 	n := unsafe.Pointer(newNode(v))
 	for {
 		last := atomic.LoadPointer(&q.tail)
@@ -50,7 +50,7 @@ func (q *Queue) enqueue(v interface{}) {
 	}
 }
 
-func (q *Queue) dequeue() (v interface{}, ok bool) {
+func (q *Queue) Dequeue() (v interface{}, ok bool) {
 	for {
 		first := atomic.LoadPointer(&q.head)
 		last := atomic.LoadPointer(&q.tail)

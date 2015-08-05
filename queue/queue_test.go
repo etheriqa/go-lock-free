@@ -12,45 +12,45 @@ func TestQueue(t *testing.T) {
 
 	{
 		q := NewQueue()
-		_, ok := q.dequeue()
+		_, ok := q.Dequeue()
 		assert.False(ok)
 	}
 
 	{
 		q := NewQueue()
-		q.enqueue(1)
+		q.Enqueue(1)
 
 		{
-			n, ok := q.dequeue()
+			n, ok := q.Dequeue()
 			assert.Equal(1, n)
 			assert.True(ok)
 		}
 
 		{
-			_, ok := q.dequeue()
+			_, ok := q.Dequeue()
 			assert.False(ok)
 		}
 	}
 
 	{
 		q := NewQueue()
-		q.enqueue(1)
-		q.enqueue(2)
+		q.Enqueue(1)
+		q.Enqueue(2)
 
 		{
-			n, ok := q.dequeue()
+			n, ok := q.Dequeue()
 			assert.Equal(1, n)
 			assert.True(ok)
 		}
 
 		{
-			n, ok := q.dequeue()
+			n, ok := q.Dequeue()
 			assert.Equal(2, n)
 			assert.True(ok)
 		}
 
 		{
-			_, ok := q.dequeue()
+			_, ok := q.Dequeue()
 			assert.False(ok)
 		}
 	}
@@ -112,12 +112,12 @@ func BenchmarkLockFreeQueue(b *testing.B) {
 
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			q.enqueue(nil)
-			q.dequeue()
+			q.Enqueue(nil)
+			q.Dequeue()
 		}
 	})
 
-	if _, ok := q.dequeue(); ok {
+	if _, ok := q.Dequeue(); ok {
 		b.Fail()
 	}
 }
