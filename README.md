@@ -9,7 +9,6 @@ TODO
 ----
 
 - linked list
-- stack
 - counter
 - sort
 - hash table
