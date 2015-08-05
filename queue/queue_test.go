@@ -107,7 +107,7 @@ func BenchmarkChannel(b *testing.B) {
 	})
 }
 
-func BenchmarkQueue(b *testing.B) {
+func BenchmarkLockFreeQueue(b *testing.B) {
 	q := NewQueue()
 
 	b.RunParallel(func(pb *testing.PB) {
