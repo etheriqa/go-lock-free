@@ -15,3 +15,8 @@ TODO
 - hash table
 - skip list
 - priority queue
+
+References
+----------
+
+[1] Maurice Herlihy and Nir Shavit. 2008. *The Art of Multiprocessor Programming*. Morgan Kaufmann Publishers Inc., San Francisco, CA, USA.
