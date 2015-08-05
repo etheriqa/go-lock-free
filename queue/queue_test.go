@@ -57,41 +57,32 @@ func TestQueue(t *testing.T) {
 }
 
 func BenchmarkNaiveQueue(b *testing.B) {
-	q := make([]interface{}, 1000)
-	head := 0
-	tail := 0
-	size := 0
-	mtx := sync.Mutex{}
+	type node struct {
+		value interface{}
+		next  *node
+	}
+	sentinel := &node{}
+	head := sentinel
+	tail := sentinel
+	mtxHead := sync.Mutex{}
+	mtxTail := sync.Mutex{}
 
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			for func() bool {
-				mtx.Lock()
-				defer mtx.Unlock()
+			func() {
+				mtxTail.Lock()
+				defer mtxTail.Unlock()
 
-				if size == 1000 {
-					return true
-				}
-				q[tail] = nil
-				tail = (tail + 1) % 1000
-				size++
-				return false
-			}() {
-			}
+				tail.next = &node{}
+				tail = tail.next
+			}()
 
-			for func() bool {
-				mtx.Lock()
-				defer mtx.Unlock()
+			func() {
+				mtxHead.Lock()
+				defer mtxHead.Unlock()
 
-				if size == 0 {
-					return true
-				}
-				_ = q[head]
-				head = (head + 1) % 1000
-				size--
-				return false
-			}() {
-			}
+				head = head.next
+			}()
 		}
 	})
 }
