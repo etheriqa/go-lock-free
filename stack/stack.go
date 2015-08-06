@@ -44,7 +44,7 @@ func newExchanger() *exchanger {
 	}
 }
 
-func NewStack() *Stack {
+func New() *Stack {
 	exchangers := make([]unsafe.Pointer, nExchangers)
 	for i := 0; i < len(exchangers); i++ {
 		exchangers[i] = unsafe.Pointer(newExchanger())

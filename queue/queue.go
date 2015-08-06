@@ -22,7 +22,7 @@ func newNode(v interface{}) *node {
 	}
 }
 
-func NewQueue() *Queue {
+func New() *Queue {
 	sentinel := unsafe.Pointer(newNode(nil))
 	return &Queue{
 		head: sentinel,

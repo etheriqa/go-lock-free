@@ -11,13 +11,13 @@ func TestStack(t *testing.T) {
 	assert := assert.New(t)
 
 	{
-		s := NewStack()
+		s := New()
 		_, ok := s.Pop()
 		assert.False(ok)
 	}
 
 	{
-		s := NewStack()
+		s := New()
 		s.Push(1)
 
 		{
@@ -33,7 +33,7 @@ func TestStack(t *testing.T) {
 	}
 
 	{
-		s := NewStack()
+		s := New()
 		s.Push(1)
 		s.Push(2)
 
@@ -86,7 +86,7 @@ func BenchmarkLockBasedStack(b *testing.B) {
 }
 
 func BenchmarkLockFreeStack(b *testing.B) {
-	s := NewStack()
+	s := New()
 
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
