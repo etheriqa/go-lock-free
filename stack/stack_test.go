@@ -56,7 +56,7 @@ func TestStack(t *testing.T) {
 	}
 }
 
-func BenchmarkNaiveStack(b *testing.B) {
+func BenchmarkLockBasedStack(b *testing.B) {
 	type node struct {
 		value interface{}
 		next  *node

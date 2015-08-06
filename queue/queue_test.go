@@ -56,7 +56,7 @@ func TestQueue(t *testing.T) {
 	}
 }
 
-func BenchmarkNaiveQueue(b *testing.B) {
+func BenchmarkLockBasedQueue(b *testing.B) {
 	type node struct {
 		value interface{}
 		next  *node
@@ -87,17 +87,6 @@ func BenchmarkNaiveQueue(b *testing.B) {
 	})
 }
 
-func BenchmarkChannel(b *testing.B) {
-	q := make(chan interface{}, 1000)
-
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			q <- nil
-			<-q
-		}
-	})
-}
-
 func BenchmarkLockFreeQueue(b *testing.B) {
 	q := NewQueue()
 
@@ -111,4 +100,15 @@ func BenchmarkLockFreeQueue(b *testing.B) {
 	if _, ok := q.Dequeue(); ok {
 		b.Fail()
 	}
+}
+
+func BenchmarkChannel(b *testing.B) {
+	q := make(chan interface{}, 1000)
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			q <- nil
+			<-q
+		}
+	})
 }
